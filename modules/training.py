@@ -345,8 +345,13 @@ def do_train(lora_name: str, always_override: bool, save_steps: int, micro_batch
             return tokenize(prompt)
 
         logger.info("Loading JSON datasets...")
-        data = load_dataset("json", data_files=clean_path('training/datasets', f'{dataset}.json'))
-        train_data = data['train'].map(generate_and_tokenize_prompt, new_fingerprint='%030x' % random.randrange(16**30))
+        input_dataset = load_dataset(f'{dataset}')
+        for split, input_data in input_dataset.items():
+            if split == 'train':
+                input_data.to_json("./training/datasets/train_data.json")
+        data = load_dataset("json", data_files=clean_path('training/datasets', 'train_data.json'))
+#        train_data = data['train'].map(generate_and_tokenize_prompt, new_fingerprint='%030x' % random.randrange(16**30))
+        train_data = data.map(generate_and_tokenize_prompt, new_fingerprint='%030x' % random.randrange(16**30))
 
         if eval_dataset == 'None':
             eval_data = None
