@@ -352,7 +352,7 @@ def do_train(lora_name: str, always_override: bool, save_steps: int, micro_batch
 #        data = load_dataset("json", data_files=clean_path('training/datasets', 'train_data.json'))
         data = load_dataset("json", data_files=clean_path('training/datasets', f'{dataset}.json'))
 #        train_data = data['train'].map(generate_and_tokenize_prompt, new_fingerprint='%030x' % random.randrange(16**30))
-        train_data = data.map(generate_and_tokenize_prompt) #, new_fingerprint='%030x' % random.randrange(16**30))
+        train_data = data['train'].map(generate_and_tokenize_prompt) #, new_fingerprint='%030x' % random.randrange(16**30))
 
         if eval_dataset == 'None':
             eval_data = None
